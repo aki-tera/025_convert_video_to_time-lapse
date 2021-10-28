@@ -46,7 +46,6 @@ def read_frame(target_paths, frame_queue):
                 break
             if frame_index % TIME_LAPSE_FRAME_RATE == 0:
                 log.info(f"[read] {path}:{convert_time(frame_index/INPUT_FRAME_RATE)}")
-                log.info(frame_index)
                 # キューに画像データを渡す
                 frame_queue.put([frame_index, frame])
             frame_index += 1
@@ -65,7 +64,6 @@ def write_frame(frame_queue):
     while True:
         # キューからデータを取得する
         frame_index, frame = frame_queue.get()
-        log.info(frame_index)
         try:
             # キューにデータが無い場合は終了
             if frame is None:
