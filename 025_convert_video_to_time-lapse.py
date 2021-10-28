@@ -46,12 +46,13 @@ def read_frame(target_paths, frame_queue):
                 break
             if frame_index % TIME_LAPSE_FRAME_RATE == 0:
                 log.info(f"[read] {path}:{convert_time(frame_index/INPUT_FRAME_RATE)}")
+                log.info(frame_index)
                 # キューに画像データを渡す
-                frame_queue.put(frame)
+                frame_queue.put([frame_index, frame])
             frame_index += 1
         capture.release()
     # すべてが終了したらキューにNoneを送り終了させる
-    frame_queue.put(None)
+    frame_queue.put([frame_index, None])
 
 
 def write_frame(frame_queue):
@@ -63,7 +64,8 @@ def write_frame(frame_queue):
 
     while True:
         # キューからデータを取得する
-        frame = frame_queue.get()
+        frame_index, frame = frame_queue.get()
+        log.info(frame_index)
         try:
             # キューにデータが無い場合は終了
             if frame is None:
@@ -85,7 +87,7 @@ def write_frame(frame_queue):
         finally:
             # キューにタスク完了を示す
             frame_queue.task_done()
-
+        frame_index += 1
     video_writer.release()
 
 
