@@ -57,7 +57,7 @@ def write_frame(frame_queue):
     # VideoWriterオブジェクトを作成
     # 出力はout.mp4
     video_writer = cv2.VideoWriter(
-        "out.mp4", cv2.VideoWriter_fourcc("m", "p", "4", "v"), OUTPUT_FRAME_RATE, (1920, 1080)
+        "out.mp4", cv2.VideoWriter_fourcc("m", "p", "4", "v"), OUTPUT_FRAME_RATE, (1280, 720)
     )
 
     frame_index = 0
@@ -70,7 +70,19 @@ def write_frame(frame_queue):
                 break
             if frame_index % TIME_LAPSE_FRAME_RATE == 0:
                 log.info(f"[write] {convert_time(frame_index/INPUT_FRAME_RATE)}")
-                video_writer.write(frame)
+
+                frame_resize = cv2.resize(frame, dsize=(1280, 720))
+
+                cv2.putText(frame_resize,
+                            convert_time(frame_index / INPUT_FRAME_RATE)+":2021/10/26@TKL",
+                            (0, 50),
+                            cv2.FONT_HERSHEY_PLAIN,
+                            3,
+                            (0, 0, 0),
+                            5,
+                            cv2.LINE_AA)
+
+                video_writer.write(frame_resize)
             frame_index += 1
         finally:
             # キューにタスク完了を示す
