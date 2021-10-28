@@ -57,11 +57,10 @@ def read_frame(target_paths, frame_queue):
 def write_frame(frame_queue):
     # VideoWriterオブジェクトを作成
     # 出力はout.mp4
+    # リサイズと整合を合わせること
     video_writer = cv2.VideoWriter(
-        "out.mp4", cv2.VideoWriter_fourcc("m", "p", "4", "v"), OUTPUT_FRAME_RATE, (1280, 720)
-    )
+        "out.mp4", cv2.VideoWriter_fourcc("m", "p", "4", "v"), OUTPUT_FRAME_RATE, (1280, 720))
 
-    frame_index = 0
     while True:
         # キューからデータを取得する
         frame = frame_queue.get()
@@ -70,10 +69,9 @@ def write_frame(frame_queue):
             if frame is None:
                 break
             else:
-                log.info(f"[write] {convert_time(frame_index/INPUT_FRAME_RATE)}")
-
+                # リサイズ
                 frame_resize = cv2.resize(frame, dsize=(1280, 720))
-
+                # 文字入力
                 cv2.putText(frame_resize,
                             convert_time(frame_index / INPUT_FRAME_RATE)+":2021/10/26@TKL",
                             (0, 50),
@@ -84,7 +82,6 @@ def write_frame(frame_queue):
                             cv2.LINE_AA)
 
                 video_writer.write(frame_resize)
-            frame_index += 1
         finally:
             # キューにタスク完了を示す
             frame_queue.task_done()
