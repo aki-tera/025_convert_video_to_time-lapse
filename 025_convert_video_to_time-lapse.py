@@ -16,7 +16,7 @@ while True:
     break
 
 INPUT_FRAME_RATE = 30
-TIME_LAPSE_FRAME_RATE = 100
+TIME_LAPSE_FRAME_RATE = 600
 OUTPUT_FRAME_RATE = 20
 
 log = logger.Logger("MAIN", level=DEBUG_LEVEL)
