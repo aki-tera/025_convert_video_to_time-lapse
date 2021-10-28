@@ -44,9 +44,10 @@ def read_frame(target_paths, frame_queue):
             # リードの可否確認
             if not result:
                 break
-            log.debug(f"[read] {path}:{convert_time(frame_index/INPUT_FRAME_RATE)}")
-            # キューに画像データを渡す
-            frame_queue.put(frame)
+            if frame_index % TIME_LAPSE_FRAME_RATE == 0:
+                log.info(f"[read] {path}:{convert_time(frame_index/INPUT_FRAME_RATE)}")
+                # キューに画像データを渡す
+                frame_queue.put(frame)
             frame_index += 1
         capture.release()
     # すべてが終了したらキューにNoneを送り終了させる
@@ -68,7 +69,7 @@ def write_frame(frame_queue):
             # キューにデータが無い場合は終了
             if frame is None:
                 break
-            if frame_index % TIME_LAPSE_FRAME_RATE == 0:
+            else:
                 log.info(f"[write] {convert_time(frame_index/INPUT_FRAME_RATE)}")
 
                 frame_resize = cv2.resize(frame, dsize=(1280, 720))
@@ -102,7 +103,7 @@ def main():
     target_paths = sorted(target_dir.glob("*.MTS"))
 
     # キューの設定
-    frame_queue = queue.Queue(maxsize=5)
+    frame_queue = queue.Queue(maxsize=100)
 
     read_frame_worker = threading.Thread(
         target=read_frame,
