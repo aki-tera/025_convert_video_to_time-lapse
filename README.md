@@ -4,8 +4,7 @@
 
 ## DEMO
 ### You can convert your video to time-lapse(mp4).  
-<img src="https://user-images.githubusercontent.com/44888139/139433664-940ce14c-3ef8-4d24-9804-0b45023a3f23.png
-" height="500px">  
+<img src="https://user-images.githubusercontent.com/44888139/139433664-940ce14c-3ef8-4d24-9804-0b45023a3f23.png" height="500px">  
 
 ## Features
 When creating a time-lapse video(mp4), you can enter the elapsed time and text on the screen. 
