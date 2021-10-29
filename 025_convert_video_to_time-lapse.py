@@ -15,9 +15,14 @@ while True:
     DEBUG_LEVEL = INFO
     break
 
-INPUT_FRAME_RATE = 30
 TIME_LAPSE_FRAME_RATE = 600
+
 OUTPUT_FRAME_RATE = 20
+OUTPUT_WIDTH = 1280
+OUTPUT_HEIGHT = 720
+
+OUTPUT_DISPLAY_STRING = ":2021/10/26"
+
 
 log = logger.Logger("MAIN", level=DEBUG_LEVEL)
 
@@ -33,7 +38,9 @@ def read_frame(target_paths, frame_queue):
     # ファイルの読み込み
     total_frame_index = 0
     for path in target_paths:
+        # フレームレートの取得
         capture = cv2.VideoCapture(str(path))
+        frame_fps = capture.get(cv2.CAP_PROP_FPS)
 
         # ファイルの有無確認
         if not capture.isOpened():
@@ -45,36 +52,39 @@ def read_frame(target_paths, frame_queue):
             if not result:
                 break
             if frame_index % TIME_LAPSE_FRAME_RATE == 0:
-                log.info(f"[read] {path}:{convert_time(frame_index/INPUT_FRAME_RATE)}")
+                log.info(f"[read] {path}:{convert_time(frame_index/frame_fps)}")
                 # キューに画像データを渡す
-                frame_queue.put([total_frame_index, frame])
+                frame_queue.put([total_frame_index, frame_fps, frame])
+
             frame_index += 1
             total_frame_index += 1
         capture.release()
     # すべてが終了したらキューにNoneを送り終了させる
-    frame_queue.put([frame_index, None])
+    frame_queue.put([frame_index, frame_fps, None])
 
 
 def write_frame(frame_queue):
     # VideoWriterオブジェクトを作成
     # 出力はout.mp4
     # リサイズと整合を合わせること
-    video_writer = cv2.VideoWriter(
-        "out.mp4", cv2.VideoWriter_fourcc("m", "p", "4", "v"), OUTPUT_FRAME_RATE, (1280, 720))
+    video_writer = cv2.VideoWriter("out.mp4",
+                                   cv2.VideoWriter_fourcc("m", "p", "4", "v"),
+                                   OUTPUT_FRAME_RATE,
+                                   (OUTPUT_WIDTH, OUTPUT_HEIGHT))
 
     while True:
         # キューからデータを取得する
-        frame_index, frame = frame_queue.get()
+        total_frame_index, frame_fps, frame = frame_queue.get()
         try:
             # キューにデータが無い場合は終了
             if frame is None:
                 break
             else:
                 # リサイズ
-                frame_resize = cv2.resize(frame, dsize=(1280, 720))
+                frame_resize = cv2.resize(frame, dsize=(OUTPUT_WIDTH, OUTPUT_HEIGHT))
                 # 文字入力
                 cv2.putText(frame_resize,
-                            convert_time(frame_index / INPUT_FRAME_RATE) + ":2021/10/26@TKL",
+                            convert_time(total_frame_index / frame_fps) + OUTPUT_DISPLAY_STRING,
                             (0, 50),
                             cv2.FONT_HERSHEY_PLAIN,
                             3,
@@ -100,8 +110,10 @@ def main():
     target_paths = sorted(target_dir.glob("*.MTS"))
 
     # キューの設定
-    frame_queue = queue.Queue(maxsize=100)
+    frame_queue = queue.Queue(maxsize=10)
 
+    # スレッド処理の設定
+    # 但し並列処理の方が若干早い
     read_frame_worker = threading.Thread(
         target=read_frame,
         daemon=True,
@@ -116,7 +128,7 @@ def main():
     read_frame_worker.join()
     write_frame_worker.join()
 
-    log.warn(f"経過時間:{convert_time(time.perf_counter() - start)}")
+    log.info(f"経過時間:{convert_time(time.perf_counter() - start)}")
 
 
 if __name__ == "__main__":
