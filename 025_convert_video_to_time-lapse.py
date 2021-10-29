@@ -12,10 +12,10 @@ while True:
     sys.path.append("../000_mymodule/")
     import logger
     from logging import DEBUG, INFO, WARNING, ERROR, CRITICAL
-    DEBUG_LEVEL = INFO
+    DEBUG_LEVEL = DEBUG
     break
 
-TIME_LAPSE_FRAME_RATE = 600
+TIME_LAPSE_FRAME_RATE = 5
 
 OUTPUT_FRAME_RATE = 20
 OUTPUT_WIDTH = 1280
@@ -35,8 +35,9 @@ def convert_time(ct_time):
 
 
 def read_frame(target_paths, frame_queue):
-    # ファイルの読み込み
     total_frame_index = 0
+
+    # ファイルの読み込み
     for path in target_paths:
         # フレームレートの取得
         capture = cv2.VideoCapture(str(path))
@@ -45,8 +46,10 @@ def read_frame(target_paths, frame_queue):
         # ファイルの有無確認
         if not capture.isOpened():
             return
+
         frame_index = 0
         while True:
+            log.debug("[read]START")
             result, frame = capture.read()
             # リードの可否確認
             if not result:
@@ -58,6 +61,7 @@ def read_frame(target_paths, frame_queue):
 
             frame_index += 1
             total_frame_index += 1
+            log.debug("[read]END")
         capture.release()
     # すべてが終了したらキューにNoneを送り終了させる
     frame_queue.put([frame_index, frame_fps, None])
@@ -80,19 +84,28 @@ def write_frame(frame_queue):
             if frame is None:
                 break
             else:
+                log.debug("[write]START")
                 # リサイズ
                 frame_resize = cv2.resize(frame, dsize=(OUTPUT_WIDTH, OUTPUT_HEIGHT))
                 # 文字入力
                 cv2.putText(frame_resize,
+                            # 出力する文字列
                             convert_time(total_frame_index / frame_fps) + OUTPUT_DISPLAY_STRING,
+                            # 表示位置、文字列の右下
                             (0, 50),
+                            # フォントの種類
                             cv2.FONT_HERSHEY_PLAIN,
-                            3,
+                            # 文字のスケール
+                            3.0,
+                            # 文字の色(青, 緑, 赤)
                             (0, 0, 0),
+                            # 文字の選の太さ
                             5,
+                            # 文字を描画するアルゴリズム
                             cv2.LINE_AA)
 
                 video_writer.write(frame_resize)
+                log.debug("[write]END")
         finally:
             # キューにタスク完了を示す
             frame_queue.task_done()
@@ -113,7 +126,7 @@ def main():
     frame_queue = queue.Queue(maxsize=10)
 
     # スレッド処理の設定
-    # 但し並列処理の方が若干早い
+    # 但し並列処理と変わらない？？
     read_frame_worker = threading.Thread(
         target=read_frame,
         daemon=True,
