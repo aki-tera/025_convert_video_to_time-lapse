@@ -15,13 +15,13 @@ while True:
     DEBUG_LEVEL = DEBUG
     break
 
-TIME_LAPSE_FRAME_RATE = 5
+TIME_LAPSE_FRAME_RATE = 30
 
 OUTPUT_FRAME_RATE = 20
 OUTPUT_WIDTH = 1280
 OUTPUT_HEIGHT = 720
 
-OUTPUT_DISPLAY_STRING = ":2021/10/26"
+OUTPUT_DISPLAY_STRING = ":Sparrow parent and children"
 
 
 log = logger.Logger("MAIN", level=DEBUG_LEVEL)
@@ -98,7 +98,7 @@ def write_frame(frame_queue):
                             # 文字のスケール
                             3.0,
                             # 文字の色(青, 緑, 赤)
-                            (0, 0, 0),
+                            (255, 255, 255),
                             # 文字の選の太さ
                             5,
                             # 文字を描画するアルゴリズム
@@ -120,7 +120,7 @@ def main():
     # カレントディレクトリを示す
     target_dir = pathlib.Path(".")
     # MTSファイルを取得、ソートする
-    target_paths = sorted(target_dir.glob("*.MTS"))
+    target_paths = sorted(target_dir.glob("*.mov"))
 
     # キューの設定
     frame_queue = queue.Queue(maxsize=10)
