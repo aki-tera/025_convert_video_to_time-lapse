@@ -12,8 +12,12 @@ while True:
     sys.path.append("../000_mymodule/")
     import logger
     from logging import DEBUG, INFO, WARNING, ERROR, CRITICAL
-    DEBUG_LEVEL = DEBUG
+    DEBUG_LEVEL = INFO
     break
+
+# File name of the video
+# 入力するファイル名
+INPUT_FILE = "*.mov"
 
 # Fast forward speed of the original video.
 # The final time-lapse speed will be the following equation.
@@ -135,7 +139,7 @@ def main():
     # カレントディレクトリを示す
     target_dir = pathlib.Path(".")
     # MTSファイルを取得、ソートする
-    target_paths = sorted(target_dir.glob("*.mov"))
+    target_paths = sorted(target_dir.glob(INPUT_FILE))
 
     # キューの設定
     frame_queue = queue.Queue(maxsize=10)
@@ -156,7 +160,7 @@ def main():
     read_frame_worker.join()
     write_frame_worker.join()
 
-    log.info(f"経過時間:{convert_time(time.perf_counter() - start)}")
+    log.info(f"Elapsed time:{convert_time(time.perf_counter() - start)}")
 
 
 if __name__ == "__main__":
