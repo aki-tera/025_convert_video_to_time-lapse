@@ -15,12 +15,27 @@ while True:
     DEBUG_LEVEL = DEBUG
     break
 
+# Fast forward speed of the original video.
+# The final time-lapse speed will be the following equation.
+# time-lapse speed = TIME_LAPSE_FRAME_RATE / OUTPUT_FRAME_RATE
+# オリジナルビデオの早回し速度
+# 最終的なタイムラプスの速度は、以下の式となる
+# タイムラプスのスピード = TIME_LAPSE_FRAME_RATE / OUTPUT_FRAME_RATE
 TIME_LAPSE_FRAME_RATE = 30
 
+# Normal video is 30 fps.
+# Recommended settings for time-lapse are 10 to 20 fps.
+# 普通のビデオは30fpsだが、タイムラプスは10から20がおすすめ
 OUTPUT_FRAME_RATE = 20
+
+# display size
+# 画面のサイズ（横、縦）
 OUTPUT_WIDTH = 1280
 OUTPUT_HEIGHT = 720
 
+
+# The string you want to display.
+# 表示したい文字列
 OUTPUT_DISPLAY_STRING = ":Sparrow parent and children"
 
 
