@@ -47,6 +47,14 @@ log = logger.Logger("MAIN", level=DEBUG_LEVEL)
 
 
 def convert_time(ct_time):
+    """Convert seconds to hours, minutes, and seconds.
+
+    Args:
+        ct_time (int/float):Seconds to be converted.
+
+    Returns:
+        string: Hours, minutes, seconds converted from seconds.
+    """
     ct_hour = int(ct_time / 3600)
     ct_minute = int((ct_time - ct_hour * 3600) / 60)
     ct_second = int(ct_time - ct_hour * 3600 - ct_minute * 60)
@@ -54,19 +62,30 @@ def convert_time(ct_time):
 
 
 def read_frame(target_paths, frame_queue):
+    """Extract a specific video frame from the videos indicated by the paths.
+
+    Args:
+        target_paths (list): Input video including path
+        frame_queue (instance): a FIFO queue
+    """
+    # タイムラプスで示す経過時間
     total_frame_index = 0
 
     # ファイルの読み込み
     for path in target_paths:
         # フレームレートの取得
         capture = cv2.VideoCapture(str(path))
-        frame_fps = capture.get(cv2.CAP_PROP_FPS)
-
+        
         # ファイルの有無確認
         if not capture.isOpened():
             return
+        
+        # 入力ファイルのfpsを取得
+        frame_fps = capture.get(cv2.CAP_PROP_FPS)
 
+        # 個々のビデオの経過時間
         frame_index = 0
+
         while True:
             log.debug("[read]START")
             result, frame = capture.read()
@@ -87,6 +106,11 @@ def read_frame(target_paths, frame_queue):
 
 
 def write_frame(frame_queue):
+    """Output a video of a new size by adding time and text to the input frame.
+
+    Args:
+        frame_queue (list): total_frame_index, frame_fps, frame
+    """
     # VideoWriterオブジェクトを作成
     # 出力はout.mp4
     # リサイズと整合を合わせること
