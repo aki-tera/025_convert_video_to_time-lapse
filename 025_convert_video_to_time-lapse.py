@@ -12,7 +12,7 @@ while True:
     sys.path.append("../000_mymodule/")
     import logger
     from logging import DEBUG, INFO, WARNING, ERROR, CRITICAL
-    DEBUG_LEVEL = INFO
+    DEBUG_LEVEL = DEBUG
     break
 
 # File name of the video
@@ -102,7 +102,7 @@ def read_frame(target_paths, frame_queue):
             log.debug("[read]END")
         capture.release()
     # すべてが終了したらキューにNoneを送り終了させる
-    frame_queue.put([frame_index, frame_fps, None])
+    frame_queue.put([total_frame_index, frame_fps, None])
 
 
 def write_frame(frame_queue):
@@ -165,24 +165,30 @@ def main():
     # MTSファイルを取得、ソートする
     target_paths = sorted(target_dir.glob(INPUT_FILE))
 
-    # キューの設定
-    frame_queue = queue.Queue(maxsize=10)
+    log.debug(target_paths)
 
-    # スレッド処理の設定
-    # 但し並列処理と変わらない？？
-    read_frame_worker = threading.Thread(
-        target=read_frame,
-        daemon=True,
-        kwargs={"target_paths": target_paths, "frame_queue": frame_queue},)
-    read_frame_worker.start()
+    if target_paths:
+        # キューの設定
+        frame_queue = queue.Queue(maxsize=10)
 
-    write_frame_worker = threading.Thread(
-        target=write_frame, daemon=True, kwargs={"frame_queue": frame_queue},)
-    write_frame_worker.start()
+        # スレッド処理の設定
+        # 但し並列処理と変わらない？？
+        read_frame_worker = threading.Thread(
+            target=read_frame,
+            daemon=True,
+            kwargs={"target_paths": target_paths, "frame_queue": frame_queue},)
+        read_frame_worker.start()
 
-    # キューの処理が終わるまでブロックする
-    read_frame_worker.join()
-    write_frame_worker.join()
+        write_frame_worker = threading.Thread(
+            target=write_frame, daemon=True, kwargs={"frame_queue": frame_queue},)
+        write_frame_worker.start()
+
+        # キューの処理が終わるまでブロックする
+        read_frame_worker.join()
+        write_frame_worker.join()
+
+    else:
+        print(f"There is no videos named {INPUT_FILE}.")
 
     log.info(f"Elapsed time:{convert_time(time.perf_counter() - start)}")
 
