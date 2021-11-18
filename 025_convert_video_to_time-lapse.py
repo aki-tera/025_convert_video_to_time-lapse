@@ -143,13 +143,6 @@ def main():
     OUTPUT_HEIGHT = setting["OUTPUT_FILE"]["OUTPUT_HEIGHT"]
     DISPLAY_STRING = setting["DISPLAY"]["STRING"]
 
-    log.info(f"INPUT_FILE:{INPUT_FILE}")
-    log.info(f"TIME_LAPSE_FRAME_RATE:{TIME_LAPSE_FRAME_RATE}")
-    log.info(f"OUTPUT_FRAME_RATE:{OUTPUT_FRAME_RATE}")
-    log.info(f"OUTPUT_WIDTH:{OUTPUT_WIDTH}")
-    log.info(f"OUTPUT_HEIGHT:{OUTPUT_HEIGHT}")
-    log.info(f"IDISPLAY_STRING:{DISPLAY_STRING}")
-
     # ファイル取得
     # カレントディレクトリを示す
     target_dir = pathlib.Path(".")
