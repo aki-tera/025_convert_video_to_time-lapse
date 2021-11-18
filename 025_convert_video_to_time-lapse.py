@@ -75,6 +75,7 @@ def read_frame(target_paths, frame_queue):
             if not result:
                 break
             if frame_index % TIME_LAPSE_FRAME_RATE == 0:
+                # 進捗の表示
                 print(f"[read] {path}:{convert_time(frame_index/frame_fps)}")
                 # キューに画像データを渡す
                 frame_queue.put([total_frame_index, frame_fps, frame])
@@ -109,7 +110,7 @@ def write_frame(frame_queue):
             if frame is None:
                 break
             else:
-                print("[write]START")
+                log.info("[write]START")
                 # リサイズ
                 frame_resize = cv2.resize(frame, dsize=(OUTPUT_WIDTH, OUTPUT_HEIGHT))
                 # 文字入力
@@ -130,7 +131,7 @@ def write_frame(frame_queue):
                             cv2.LINE_AA)
 
                 video_writer.write(frame_resize)
-                print("[write]END")
+                log.info("[write]END")
         finally:
             # キューにタスク完了を示す
             frame_queue.task_done()
