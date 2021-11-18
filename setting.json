@@ -1,5 +1,5 @@
 {
-    "INPUT_FILE":{
+    "SEARCH_FILE":{
         "説明":"入力するファイル名",
         "description":"File name of the video",
         "NAME":"*.mov"
@@ -14,6 +14,12 @@
         "description":"Specification of the output file",
         "FRAME_RATE":20,
         "OUTPUT_WIDTH":1280,
-        "OUTPUT_HEIGHT":720
+        "OUTPUT_HEIGHT":720,
+        "DISPLAY_STRING":":Sparrow parent and children"
+    },
+    "DISPLAY":{
+        "説明":"表示する文字の仕様",
+        "description":"Specification of characters to be displayed",
+        "STRING":":Sparrow parent and children"
     }
 }
