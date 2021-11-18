@@ -2,7 +2,7 @@
     "SEARCH_FILE":{
         "説明":"入力するファイル名",
         "description":"File name of the video",
-        "NAME":"*.MTS"
+        "NAME":"*.mov"
     },
     "INPUT_FILE":{
         "説明":"入力ファイルの早回し速度、タイムラプスのスピード = TIME_LAPSE_SPEED / OUTPUT's FRAME_RATE",
