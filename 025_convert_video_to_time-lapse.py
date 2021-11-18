@@ -50,14 +50,6 @@ def read_frame(target_paths, frame_queue):
         target_paths (list): Input video including path
         frame_queue (instance): a FIFO queue
     """
-
-    log.info(f"[read]INPUT_FILE:{INPUT_FILE}")
-    log.info(f"[read]TIME_LAPSE_FRAME_RATE:{TIME_LAPSE_FRAME_RATE}")
-    log.info(f"[read]OUTPUT_FRAME_RATE:{OUTPUT_FRAME_RATE}")
-    log.info(f"[read]OUTPUT_WIDTH:{OUTPUT_WIDTH}")
-    log.info(f"[read]OUTPUT_HEIGHT:{OUTPUT_HEIGHT}")
-    log.info(f"[read]IDISPLAY_STRING:{DISPLAY_STRING}")
-
     # タイムラプスで示す経過時間
     total_frame_index = 0
 
@@ -104,14 +96,6 @@ def write_frame(frame_queue):
     # VideoWriterオブジェクトを作成
     # 出力はout.mp4
     # リサイズと整合を合わせること
-
-    log.info(f"[write]INPUT_FILE:{INPUT_FILE}")
-    log.info(f"[write]TIME_LAPSE_FRAME_RATE:{TIME_LAPSE_FRAME_RATE}")
-    log.info(f"[write]OUTPUT_FRAME_RATE:{OUTPUT_FRAME_RATE}")
-    log.info(f"[write]OUTPUT_WIDTH:{OUTPUT_WIDTH}")
-    log.info(f"[write]OUTPUT_HEIGHT:{OUTPUT_HEIGHT}")
-    log.info(f"[write]IDISPLAY_STRING:{DISPLAY_STRING}")
-
     video_writer = cv2.VideoWriter("out.mp4",
                                    cv2.VideoWriter_fourcc("m", "p", "4", "v"),
                                    OUTPUT_FRAME_RATE,
@@ -157,7 +141,7 @@ def main():
     # 時間計測用
     start = time.perf_counter()
 
-    #jsonファイルの設定ファイル読み込み
+    # jsonファイルの設定ファイル読み込み
     global INPUT_FILE
     global TIME_LAPSE_FRAME_RATE
     global OUTPUT_FRAME_RATE
@@ -179,7 +163,6 @@ def main():
     log.info(f"OUTPUT_WIDTH:{OUTPUT_WIDTH}")
     log.info(f"OUTPUT_HEIGHT:{OUTPUT_HEIGHT}")
     log.info(f"IDISPLAY_STRING:{DISPLAY_STRING}")
-
 
     # ファイル取得
     # カレントディレクトリを示す
