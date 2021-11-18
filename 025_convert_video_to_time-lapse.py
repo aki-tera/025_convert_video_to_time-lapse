@@ -122,7 +122,6 @@ def write_frame(frame_queue):
 
 
 def main():
-
     # jsonファイルの設定ファイル読み込み
     global INPUT_FILE
     global TIME_LAPSE_FRAME_RATE
