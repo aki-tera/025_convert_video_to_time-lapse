@@ -4,33 +4,16 @@ import threading
 
 import cv2
 
-
-# File name of the video
-# 入力するファイル名
-INPUT_FILE = "*.mov"
-
-# Fast forward speed of the original video.
-# The final time-lapse speed will be the following equation.
-# time-lapse speed = TIME_LAPSE_FRAME_RATE / OUTPUT_FRAME_RATE
-# オリジナルビデオの早回し速度
-# 最終的なタイムラプスの速度は、以下の式となる
-# タイムラプスのスピード = TIME_LAPSE_FRAME_RATE / OUTPUT_FRAME_RATE
-TIME_LAPSE_FRAME_RATE = 30
-
-# Normal video is 30 fps.
-# Recommended settings for time-lapse are 10 to 20 fps.
-# 普通のビデオは30fpsだが、タイムラプスは10から20がおすすめ
-OUTPUT_FRAME_RATE = 20
-
-# display size
-# 画面のサイズ（横、縦）
-OUTPUT_WIDTH = 1280
-OUTPUT_HEIGHT = 720
+import json
 
 
-# The string you want to display.
-# 表示したい文字列
-OUTPUT_DISPLAY_STRING = ":Sparrow parent and children"
+# グローバル変数を示す
+INPUT_FILE = ""
+TIME_LAPSE_FRAME_RATE = 0
+OUTPUT_FRAME_RATE = 0
+OUTPUT_WIDTH = 0
+OUTPUT_HEIGHT = 0
+DISPLAY_STRING = ""
 
 
 def convert_time(ct_time):
@@ -120,7 +103,7 @@ def write_frame(frame_queue):
                 # 文字入力
                 cv2.putText(frame_resize,
                             # 出力する文字列
-                            convert_time(total_frame_index / frame_fps) + OUTPUT_DISPLAY_STRING,
+                            convert_time(total_frame_index / frame_fps) + DISPLAY_STRING,
                             # 表示位置、文字列の右下
                             (0, 50),
                             # フォントの種類
@@ -143,6 +126,29 @@ def write_frame(frame_queue):
 
 
 def main():
+
+    # jsonファイルの設定ファイル読み込み
+    global INPUT_FILE
+    global TIME_LAPSE_FRAME_RATE
+    global OUTPUT_FRAME_RATE
+    global OUTPUT_WIDTH
+    global OUTPUT_HEIGHT
+    global DISPLAY_STRING
+
+    setting = json.load(open("setting.json", "r", encoding="utf-8"))
+    INPUT_FILE = setting["SEARCH_FILE"]["NAME"]
+    TIME_LAPSE_FRAME_RATE = setting["INPUT_FILE"]["TIME_LAPSE_SPEED"]
+    OUTPUT_FRAME_RATE = setting["OUTPUT_FILE"]["FRAME_RATE"]
+    OUTPUT_WIDTH = setting["OUTPUT_FILE"]["OUTPUT_WIDTH"]
+    OUTPUT_HEIGHT = setting["OUTPUT_FILE"]["OUTPUT_HEIGHT"]
+    DISPLAY_STRING = setting["DISPLAY"]["STRING"]
+
+    log.info(f"INPUT_FILE:{INPUT_FILE}")
+    log.info(f"TIME_LAPSE_FRAME_RATE:{TIME_LAPSE_FRAME_RATE}")
+    log.info(f"OUTPUT_FRAME_RATE:{OUTPUT_FRAME_RATE}")
+    log.info(f"OUTPUT_WIDTH:{OUTPUT_WIDTH}")
+    log.info(f"OUTPUT_HEIGHT:{OUTPUT_HEIGHT}")
+    log.info(f"IDISPLAY_STRING:{DISPLAY_STRING}")
 
     # ファイル取得
     # カレントディレクトリを示す

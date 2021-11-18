@@ -1,0 +1,24 @@
+{
+    "SEARCH_FILE":{
+        "説明":"入力するファイル名",
+        "description":"File name of the video",
+        "NAME":"*.MTS"
+    },
+    "INPUT_FILE":{
+        "説明":"入力ファイルの早回し速度、タイムラプスのスピード = TIME_LAPSE_SPEED / OUTPUT's FRAME_RATE",
+        "description":"Fast forward speed of the original video. time-lapse speed = TIME_LAPSE_SPEED / OUTPUT's FRAME_RATE",
+        "TIME_LAPSE_SPEED":30
+    },
+    "OUTPUT_FILE":{
+        "説明":"出力するファイルの仕様",
+        "description":"Specification of the output file",
+        "FRAME_RATE":20,
+        "OUTPUT_WIDTH":1280,
+        "OUTPUT_HEIGHT":720
+    },
+    "DISPLAY":{
+        "説明":"表示する文字の仕様",
+        "description":"Specification of characters to be displayed",
+        "STRING":":Sparrow parent and children"
+    }
+}
